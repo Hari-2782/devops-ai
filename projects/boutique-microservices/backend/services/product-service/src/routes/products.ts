@@ -105,7 +105,7 @@ router.get('/categories', async (req, res) => {
     const result = await query(`
       SELECT c.*, COUNT(p.id) as product_count
       FROM categories c
-      LEFT JOIN products p ON c.name = p.category
+      LEFT JOIN products p ON c.id = p.category_id
       GROUP BY c.id, c.name, c.description, c.image_url
       ORDER BY c.name
     `);
