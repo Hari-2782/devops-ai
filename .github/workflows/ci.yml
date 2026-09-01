@@ -3,7 +3,6 @@ name: Boutique CI Pipeline
 on:
   push:
     branches:
-      - main
       - develop
 
 env:
