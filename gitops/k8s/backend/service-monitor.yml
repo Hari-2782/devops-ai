@@ -2,7 +2,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: boutique-services
-  namespace: monitoring
+  namespace: boutique
   labels:
     release: kube-prometheus-stack
 spec:
@@ -10,9 +10,16 @@ spec:
     matchNames:
       - boutique
   selector:
-    matchLabels:
-      app: gateway   
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - gateway
+          - auth
+          - product-service
+          - orders
+          - order-service
+          - user-service
   endpoints:
-    - port: http
-      path: /metrics
+    - path: /metrics
       interval: 15s
