@@ -36,6 +36,8 @@ kind: Service
 metadata:
   name: auth
   namespace: boutique
+  labels:
+    app: auth
 spec:
   selector:
     app: auth
