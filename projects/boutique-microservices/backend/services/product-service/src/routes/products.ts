@@ -100,14 +100,36 @@ let whereClause = 'WHERE 1=1';
   }
 });
 
+router.get('/categories', async (req, res) => {
+  try {
+    const result = await query(`
+      SELECT c.*, COUNT(p.id) as product_count
+      FROM categories c
+      LEFT JOIN products p ON c.name = p.category
+      GROUP BY c.id, c.name, c.description, c.image_url
+      ORDER BY c.name
+    `);
+
+    const response: ServiceResponse<any[]> = {
+      success: true,
+      data: result.rows
+    };
+
+    res.json(response);
+  } catch (error) {
+    console.error('Get categories error:', error);
+    res.status(500).json({ success: false, error: 'Failed to get categories' });
+  }
+});
+
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const result = await query(`
-      SELECT p.id, p.name, p.description, p.price, p.compare_price, 
+      SELECT p.id, p.name, p.description, p.price, p.compare_price,
              p.brand, p.inventory_quantity, p.is_featured, p.created_at, p.updated_at,
              COALESCE(c.name, 'Uncategorized') as category,
-             CASE 
+             CASE
                WHEN p.name ILIKE '%gown%' OR p.name ILIKE '%dress%' THEN '/product-images/silk-evening-gown.jpg'
                WHEN p.name ILIKE '%coat%' OR p.name ILIKE '%cashmere%' THEN '/product-images/cashmere-coat.jpg'
                WHEN p.name ILIKE '%handbag%' OR p.name ILIKE '%bag%' THEN '/product-images/leather-handbag.jpg'
@@ -133,28 +155,6 @@ router.get('/:id', async (req, res) => {
   } catch (error) {
     console.error('Get product error:', error);
     res.status(500).json({ success: false, error: 'Failed to get product' });
-  }
-});
-
-router.get('/categories', async (req, res) => {
-  try {
-    const result = await query(`
-      SELECT c.*, COUNT(p.id) as product_count 
-      FROM categories c 
-      LEFT JOIN products p ON c.name = p.category 
-      GROUP BY c.id, c.name, c.description, c.image_url
-      ORDER BY c.name
-    `);
-
-    const response: ServiceResponse<any[]> = {
-      success: true,
-      data: result.rows
-    };
-
-    res.json(response);
-  } catch (error) {
-    console.error('Get categories error:', error);
-    res.status(500).json({ success: false, error: 'Failed to get categories' });
   }
 });
 
