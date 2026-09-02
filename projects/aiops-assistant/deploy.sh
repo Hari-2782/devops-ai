@@ -117,7 +117,7 @@ else
   AGENT_ID=$(aws bedrock-agent create-agent \
     --agent-name "$AGENT_NAME" \
     --agent-resource-role-arn "$AGENT_ROLE_ARN" \
-    --foundation-model "qwen.qwen3-32b-v1:0" \
+    --foundation-model "anthropic.claude-3-5-sonnet-20241022-v2:0" \
     --instruction "$AGENT_INSTRUCTION" \
     --region "$REGION" \
     --query 'agent.agentId' --output text)
